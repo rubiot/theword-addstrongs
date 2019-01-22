@@ -282,6 +282,8 @@ sub interactive-association(@words, Str @unassociated, @dst, @src)
 
 sub load-synonyms()
 {
+  # TODO load %synonyms from a file
+
   #%synonyms<expansão><firmamento>++;
   #%synonyms<erva><relva>++;
   #%synonyms<luminares><luzeiros>++;
