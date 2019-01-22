@@ -44,14 +44,6 @@ our %opts;
 our $ibiblia-project;
 our $ibiblia-pairs = '';
 
-#sub MAIN() {
-#  my $idx = Biblia::TheWord::Index.new( :range(OT) );
-#  for ^23145 {
-#    say "{$idx.bookId()}.{$idx.chapter()}.{$idx.verse()}\t{$idx.ref()}";
-#    $idx.next;
-#  }
-#}
-
 sub MAIN(
   BibleModule:D :$file,        # Path to the module you want to add Strongs to
   BibleModule:D :$borrow-from, # Path to the module you want to borrow Strongs from
@@ -73,16 +65,13 @@ sub MAIN(
                                 (%opts<dst-range> == OT && %opts<src-range> == NT);
 
   load-synonyms();
-  non_threaded_proc();
+  add-strongs();
 }
 
-sub non_threaded_proc()
+sub add-strongs()
 {
-  #our $module = Biblia::iBiblia::Module.new("/mnt/c/Temp/projeto.bib");
   our $idx = Biblia::TheWord::Index.new( :lang(en_us), :range(get-common-range()) );
 
-  #my Int @lines = 1..23145;
-  #my Int @lines = 1..($idx.line("Matt 1:1") - 1);
   my Int @lines = 1..$idx.max;
   my @src-lines = %opts<src-module>.IO.lines[|get-src-range()];
   my @dst-lines = %opts<dst-module>.IO.lines[|get-dst-range()];
@@ -92,26 +81,17 @@ sub non_threaded_proc()
   for @lines Z @dst-lines Z @src-lines -> [$line, $dst-line, $src-line] {
     NEXT { $idx.next; $ibiblia-pairs = ""; }
 
-    # temporary!!
-    last if $idx.bookId == 40;
-    # temporary!!
-
     next if $line < %opts<start-line>;
 
     say-debug inbold("line {$idx.line()}, {$idx.ref()}...");
     say-debug inbold("  dst: ") ~ ingreen($dst-line.strip-tags);
     say-debug inbold("  src: ") ~ ingreen($src-line.strip-tags);
 
-    #$dst ~~ s:g/(<[῾]>)(<[Α..Ω]>)/{}/;
-    #my $parse_sem_strongs =
-    my $p1 = start
-    Biblia::TheWord::Verse.parse(
+    my $p1 = start Biblia::TheWord::Verse.parse(
       $dst-line,
       :actions(Biblia::TheWord::Verse::Actions.new)
     ) or die inred(">>> %opts<module> - couldn't parse verse on line $line:\n"), $dst-line;
-    #my $parse_com_strongs =
-    my $p2 = start
-    Biblia::TheWord::Verse.parse(
+    my $p2 = start Biblia::TheWord::Verse.parse(
       $src-line,
       :actions(Biblia::TheWord::Verse::Actions.new)
     ) or die inred(">>> %opts<src-module> - couldn't parse verse on line $line:\n") ~ $src-line;
@@ -124,11 +104,6 @@ sub non_threaded_proc()
       $parse_sem_strongs.made,
       $parse_com_strongs.made.grep(Biblia::TheWord::Syntagm)
     );
-
-    # debug!!
-    #say $ibiblia-pairs;
-    #last;
-    # debug!!
 
     $ibiblia-project.insert(
       $line,
@@ -299,12 +274,7 @@ sub interactive-association(@words, Str @unassociated, @dst, @src)
     for @src.keys -> $is {
       my $s := @src[$is];
       next unless $s ~~ Biblia::TheWord::Syntagm;
-#      if $s.word.synonym-of($d.word) {
-#        say-debug inyellow("      {$d.word} --> {$s.word}");
-#        @words[$w] = format-syntagm($d, $s);
-#        @src.splice($is, 1);
-#        next WORD;
-#      }
+      # TODO ###############################
     }
     @unassociated.push($d.word);
   }
@@ -312,9 +282,9 @@ sub interactive-association(@words, Str @unassociated, @dst, @src)
 
 sub load-synonyms()
 {
-  %synonyms<expansão><firmamento>++;
-  %synonyms<erva><relva>++;
-  %synonyms<luminares><luzeiros>++;
+  #%synonyms<expansão><firmamento>++;
+  #%synonyms<erva><relva>++;
+  #%synonyms<luminares><luzeiros>++;
 }
 
 sub get-file-range(Str $module) returns BibleRange
