@@ -25,10 +25,9 @@ sub MAIN(BibFile:D :$first!, BibFile:D :$second!) {
 sub compare-verse(%left, %right) {
     my @diffs;
 
-    compare-field(@diffs, 'pare_texto_origem', %left, %right);
-    compare-field(@diffs, 'pare_texto_destino', %left, %right);
-    compare-field(@diffs, 'pare_pares', %left, %right);
-    compare-field(@diffs, 'pare_comentarios', %left, %right);
+    for <pare_texto_origem pare_texto_destino pare_pares pare_comentarios> -> $field {
+        compare-field(@diffs, $field, %left, %right)
+    }
 
     if @diffs.elems {
         say inbold(%left<pare_ref>);
