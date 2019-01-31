@@ -76,7 +76,7 @@ sub add-strongs()
   my @src-lines = %opts<src-module>.IO.lines[|get-src-range()];
   my @dst-lines = %opts<dst-module>.IO.lines[|get-dst-range()];
 
-  $ibiblia-project = Biblia::iBiblia::Project.new(:file(%opts<ibiblia>), :range($idx.range)) if %opts<ibiblia>;
+  $ibiblia-project = Biblia::iBiblia::ProjectWriter.new(:file(%opts<ibiblia>), :range($idx.range)) if %opts<ibiblia>;
 
   for @lines Z @dst-lines Z @src-lines -> [$line, $dst-line, $src-line] {
     NEXT { $idx.next; $ibiblia-pairs = ""; }
@@ -97,8 +97,8 @@ sub add-strongs()
     ) or die inred(">>> %opts<src-module> - couldn't parse verse on line $line:\n") ~ $src-line;
     my ($parse_sem_strongs, $parse_com_strongs) = await $p1, $p2;
 
-    say $parse_com_strongs.made;
-    say $parse_sem_strongs.made;
+    #say $parse_com_strongs.made;
+    #say $parse_sem_strongs.made;
 
     associate-verse(
       $parse_sem_strongs.made,

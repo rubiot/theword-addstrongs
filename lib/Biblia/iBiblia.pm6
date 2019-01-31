@@ -1,9 +1,11 @@
 use v6;
 unit module Biblia::iBiblia;
-use DBIish;
 use Biblia::TheWord::Refs;
+use DBIish;
 
-constant @statements =
+%*ENV<DBIISH_SQLITE_LIB> = "sqlite3.dll" if $*DISTRO.is-win;
+
+constant @ddl-statements =
   "DROP TABLE IF EXISTS traducoes",
   "CREATE TABLE traducoes (
       trad_lori_id integer not null,
@@ -67,30 +69,40 @@ class Pair
 
 class Project
 {
-  has Str $!file;
-  has $!dbh;
-  has Biblia::TheWord::Index $!idx;
-  has BibleRange $!range;
+  has $.dbh;
+  has BibleRange $.range is rw;
+  has Str $.file is required;
+  has Biblia::TheWord::Index $.idx is rw;
+
+  submethod BUILD(:$!file) {
+    $!dbh = DBIish.connect("SQLite", :database($!file));
+  }
+
+  submethod DESTROY() {
+    $!dbh.dispose;
+  }
+}
+
+class ProjectWriter is Project
+{
   has $!insert-sth;
   has $!insert-info;
 
-  submethod BUILD(:$!file, :$!range) {
-    $!idx = Biblia::TheWord::Index.new( :lang(pt_br), :range($!range) );
-    $!dbh = DBIish.connect("SQLite", :database($!file));
+  submethod BUILD(:$range) {
+    self.range = $range;
+    self.idx = Biblia::TheWord::Index.new( :lang(pt_br), :range(self.range) );
 
-    for @statements -> $s {
-      $!dbh.do($s);
+    for @ddl-statements -> $s {
+      self.dbh.do($s);
     }
 
-    $!insert-sth  = $!dbh.prepare('INSERT INTO pares VALUES (?,?,?,?,?,?,?,?,?)');
-    $!insert-info = $!dbh.prepare('INSERT INTO info  VALUES (?,?)');
-
+    $!insert-sth  = self.dbh.prepare('INSERT INTO pares VALUES (?,?,?,?,?,?,?,?,?)');
+    $!insert-info = self.dbh.prepare('INSERT INTO info  VALUES (?,?)');
     #self.add-info('descricao', 'addstrong-auto-generated-project');
   }
 
   submethod DESTROY() {
     $!insert-sth.finish;
-    $!dbh.dispose;
   }
 
   method add-info(Str:D $key, Str:D $value) {
@@ -98,17 +110,17 @@ class Project
   }
 
   method insert(Int:D $line, Pair:D $pair) {
-    $!idx.goto($line);
+    self.idx.goto($line);
     $!insert-sth.execute(
-      sprintf("%d,%d,%d", $!idx.bookId, $!idx.chapter, $!idx.verse),
-      $!idx.ref,
+      sprintf("%d,%d,%d", self.idx.bookId, self.idx.chapter, self.idx.verse),
+      self.idx.ref,
       $pair.src-text,
       $pair.dst-text,
-      "", # consulta 1
-      "", # consulta 2
+      "", # reference 1
+      "", # reference 2
       $pair.pairs,
-      0,  # pare_situacao
-      ""  # pare_comentarios
+      0,  # status
+      ""  # comments
     );
   }
 }
