@@ -70,7 +70,6 @@ class Pair
 class Project
 {
   has $.dbh;
-  has BibleRange $.range is rw;
   has Str $.file is required;
   has Biblia::TheWord::Index $.idx is rw;
 
@@ -82,12 +81,12 @@ class Project
     $!dbh.dispose;
   }
 
-  method init-idx {
-    self.idx = Biblia::TheWord::Index.new( :lang(pt_br), :range(self.range) );
+  method init-idx(BibleRange $range) {
+    self.idx = Biblia::TheWord::Index.new( :lang(pt_br), :range($range) );
   }
 }
 
-class ProjectReader is Project
+class ProjectReader is Project does Positional
 {
   has @!pairs;
   has %.info;
@@ -98,21 +97,29 @@ class ProjectReader is Project
     for $select-info.allrows(:array-of-hash) -> %row {
       %!info{%row<id>} = %row<valor>;
     }
+
     my $select-pairs = self.dbh.prepare('SELECT * from pares');
     $select-pairs.execute;
     @!pairs = $select-pairs.allrows(:array-of-hash);
     $select-pairs.dispose;
 
-    self.range = @!pairs[0]<pare_id> = '40,1,1' ?? NT !! OT;
-    self.init-idx;
+    self.init-idx(@!pairs[0]<pare_id> = '1,1,1' ?? OT !! NT);
   }
 
-  method read-next {
-    my %result := @!pairs[self.idx.line-1];
+  multi method elems() {
+    self.idx.max
+  }
+
+  multi method AT-POS($index) {
+    self.idx.goto($index + 1);
+    my %result = @!pairs[self.idx.line - 1];
     %result<pare_pares>       //= '';
     %result<pare_comentarios> //= '';
-    self.idx.next;
     %result;
+  }
+
+  multi method EXISTS-POS($index) {
+    0 <= $index <= self.idx.max
   }
 }
 
@@ -122,8 +129,7 @@ class ProjectWriter is Project
   has $!insert-info;
 
   submethod BUILD(:$range) {
-    self.range = $range;
-    self.init-idx;
+    self.init-idx($range);
 
     for @ddl-statements -> $s {
       self.dbh.do($s);

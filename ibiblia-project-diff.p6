@@ -17,9 +17,8 @@ sub MAIN(BibFile:D :$first!, BibFile:D :$second!) {
     my $p2 = Biblia::iBiblia::ProjectReader.new(:file($second));
 
     say "comparing {$p1.info<descricao>} to {$p2.info<descricao>}...";
-    loop {
-        compare-verse($p1.read-next(), $p2.read-next());
-        last if $p1.idx.line == $p1.idx.max;
+    for ^$p1.elems -> $i {
+        compare-verse($p1[$i], $p2[$i])
     }
 }
 
