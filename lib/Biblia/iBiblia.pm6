@@ -81,6 +81,39 @@ class Project
   submethod DESTROY() {
     $!dbh.dispose;
   }
+
+  method init-idx {
+    self.idx = Biblia::TheWord::Index.new( :lang(pt_br), :range(self.range) );
+  }
+}
+
+class ProjectReader is Project
+{
+  has @!pairs;
+  has %.info;
+
+  submethod BUILD() {
+    my $select-info = self.dbh.prepare('select * from info');
+    $select-info.execute;
+    for $select-info.allrows(:array-of-hash) -> %row {
+      %!info{%row<id>} = %row<valor>;
+    }
+    my $select-pairs = self.dbh.prepare('SELECT * from pares');
+    $select-pairs.execute;
+    @!pairs = $select-pairs.allrows(:array-of-hash);
+    $select-pairs.dispose;
+
+    self.range = @!pairs[0]<pare_id> = '40,1,1' ?? NT !! OT;
+    self.init-idx;
+  }
+
+  method read-next {
+    my %result := @!pairs[self.idx.line-1];
+    %result<pare_pares>       //= '';
+    %result<pare_comentarios> //= '';
+    self.idx.next;
+    %result;
+  }
 }
 
 class ProjectWriter is Project
@@ -90,7 +123,7 @@ class ProjectWriter is Project
 
   submethod BUILD(:$range) {
     self.range = $range;
-    self.idx = Biblia::TheWord::Index.new( :lang(pt_br), :range(self.range) );
+    self.init-idx;
 
     for @ddl-statements -> $s {
       self.dbh.do($s);

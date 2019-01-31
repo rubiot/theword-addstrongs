@@ -45,8 +45,8 @@ our $ibiblia-project;
 our $ibiblia-pairs = '';
 
 sub MAIN(
-  BibleModule:D :$file,        # Path to the module you want to add Strongs to
-  BibleModule:D :$borrow-from, # Path to the module you want to borrow Strongs from
+  BibleModule:D :$file!,       # Path to the module you want to add Strongs to
+  BibleModule:D :$borrow-from!,# Path to the module you want to borrow Strongs from
   Int  :$start-from = 1,       # Skip to this line, useful in debug mode
   Bool :$debug = False,        # Enable debug mode
   Str  :$ibiblia               # Generate an iBiblia association project
