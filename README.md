@@ -1,5 +1,5 @@
 # theword-addstrongs
-Command-line tool to copy strongs from one theWord Bible module to another.
+Command-line tool that copies strongs/morphology tags from one theWord Bible module to another based on similar words.
 
 Usage:
 
