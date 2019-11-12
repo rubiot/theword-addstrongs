@@ -27,19 +27,30 @@ class Syntagm is Elem
 
 class Verse::Actions
 {
-  has $.order = 0;
+  has Int $.order = 0;
 
-  method TOP($/)        { make @<elem>».made          }
-
+  method TOP($/) {
+    make @<elem>».made
+  }
+  method syntagm($/)
+  {
+    make Syntagm.new(
+            :text(~$/),
+            :word($<word>.made),
+            :tags(@<tags>».made),
+            :pre-tags($<wt>.made // "")
+    );
+    #say $/.made;
+  }
   method punctuation($/){ make Elem.new( :text(~$/) ) }
   method blank($/)      { make Elem.new( :text(~$/) ) }
-
-  method other-tag($/)  { make Elem.new( :text(~$/) ) }
   method note($/)       { make Elem.new( :text(~$/) ) }
   method title($/)      { make Elem.new( :text(~$/) ) }
 
+  method other-tag($/)  { make Elem.new( :text(~$/) ) }
+
   method word($/)       { make ~$/ }
-  method wt($/)         { make ~$/ }
+  method wt($/)         { $!order++; make ~$/ }
   method tags($/)       { make ~$/ }
   method morpho-tag($/) { make ~$/ }
   method strong-tag($/) { make ~$/ }
@@ -54,17 +65,6 @@ class Verse::Actions
     $e.order = $!order++;
     #say $e;
     make $e;
-  }
-
-  method syntagm($/)
-  {
-    make Syntagm.new(
-      :text(~$/),
-      :word($<word>.made),
-      :tags(@<tags>».made)
-      :pre-tags($<wt>.made // "")
-    );
-    #say $/.made;
   }
 }
 

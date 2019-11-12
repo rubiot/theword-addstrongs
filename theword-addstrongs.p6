@@ -134,6 +134,7 @@ sub same-string(Str $a, Str $b) #is cached
 sub update-ibiblia-pairs(Biblia::TheWord::Syntagm:D $dst,
                          Biblia::TheWord::Syntagm $src?)
 {
+  #say-debug sprintf('<par a="%d" b="%d">', $src.order, $dst.order);
   $ibiblia-pairs ~= sprintf('<par a="%d" b="%d">', $src.order, $dst.order)
     if %opts<ibiblia> && $src && $src.tags;
 }
@@ -163,13 +164,10 @@ sub print-verse(Str $line)
 
 sub associate-verse(@dst, @src is copy)
 {
-  my @phases =
-  (
-    &exact-association,
-    &levenshtein-association,
-    &synonym-association,
-    #&interactive-association,
-  );
+  my @phases = &exact-association,
+               &levenshtein-association,
+               &synonym-association
+               ;
 
   my Str @words[@dst.elems];
   my Str @unassociated;
@@ -204,7 +202,7 @@ sub exact-association(@words, Str @unassociated, @dst, @src)
 
     if $d ~~ Biblia::TheWord::Syntagm {
       for @src.keys -> $is {
-        my $s = @src[$is];
+        my $s := @src[$is];
         next unless $s ~~ Biblia::TheWord::Syntagm;
         if same-string($s.word, $d.word) {
           @words[$id] = format-syntagm($d, $s);
