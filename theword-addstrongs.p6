@@ -49,22 +49,30 @@ sub MAIN(
   BibleModule:D :$borrow-from!,# Path to the module you want to borrow Strongs from
   Int  :$start-from = 1,       # Skip to this line, useful in debug mode
   Bool :$debug = False,        # Enable debug mode
-  Str  :$ibiblia               # Generate an iBiblia association project
+  Str  :$ibiblia,              # Generate an iBiblia association project
+  Int  :$max-levenshtein = 1,  # Maximum Levenshtein allowed
+  Int  :$min-levenshtein = 3,  # Minimum word size to apply Levenshtein
+  Str  :$synonyms-file,        # Synonyms file
+  Bool :$strongs-association = False # Do associations based on Strong's tags
  )
 {
-  %opts<dst-module> = $file;
-  %opts<src-module> = $borrow-from;
-  %opts<start-line> = $start-from;
-  %opts<debug>      = $debug;
-  %opts<no-tags>    = False;
-  %opts<ibiblia>    = $ibiblia;
-  %opts<src-range>  = get-file-range(%opts<src-module>);
-  %opts<dst-range>  = get-file-range(%opts<dst-module>);
+  %opts<dst-module>          = $file;
+  %opts<src-module>          = $borrow-from;
+  %opts<start-line>          = $start-from;
+  %opts<debug>               = $debug;
+  %opts<no-tags>             = False;
+  %opts<ibiblia>             = $ibiblia;
+  %opts<max-levenshtein>     = $max-levenshtein;
+  %opts<min-levenshtein>     = $min-levenshtein;
+  %opts<synonyms-file>       = $synonyms-file;
+  %opts<strongs-association> = $strongs-association;
+  %opts<src-range>           = get-file-range(%opts<src-module>);
+  %opts<dst-range>           = get-file-range(%opts<dst-module>);
 
   fail "incompatible ranges" if (%opts<src-range> == OT && %opts<dst-range> == NT) ||
                                 (%opts<dst-range> == OT && %opts<src-range> == NT);
 
-  load-synonyms();
+  load-synonyms() with %opts<synonyms-file>;
   add-strongs();
 }
 
@@ -164,10 +172,8 @@ sub print-verse(Str $line)
 
 sub associate-verse(@dst, @src is copy)
 {
-  my @phases = &exact-association,
-               &levenshtein-association,
-               &synonym-association
-               ;
+  my @phases = %opts<strongs-association> ?? (&strongs-association)
+                                          !! (&exact-association, &levenshtein-association, &synonym-association);
 
   my Str @words[@dst.elems];
   my Str @unassociated;
@@ -178,7 +184,7 @@ sub associate-verse(@dst, @src is copy)
     $phase(@words, @unassociated, @dst, @src);
 
     if %opts<debug> && (@src.elems || @unassociated.elems) {
-      #say " >>> left after {$f.name}";
+      say "   left after {$phase.name}";
       say "     dst: " ~ inyellow(@unassociated.join(" "));
       say "     src: " ~ inyellow(@src.grep(Biblia::TheWord::Syntagm).map({.word}).join(" "));
     }
@@ -218,16 +224,40 @@ sub exact-association(@words, Str @unassociated, @dst, @src)
   }
 }
 
+sub strongs-association(@words, Str @unassociated, @dst, @src)
+{
+  WORD: for @dst.keys -> $id {
+    my $d := @dst[$id];
+
+    if $d ~~ Biblia::TheWord::Syntagm && $d.tags.elems {
+      for @src.keys -> $is {
+        my $s := @src[$is];
+        next unless $s ~~ Biblia::TheWord::Syntagm && $s.tags.elems;
+        if $d.share-strongs-with($s) {
+          say-debug inyellow("      {$d.word} --> {$s.word}");
+          @words[$id] = format-syntagm($d, $s);
+          @src.splice($is, 1);
+          next WORD;
+        }
+      }
+      @words[$id] = '';
+      @unassociated.push($d.word);
+    } else {
+      @words[$id] = $d.text;
+    }
+  }
+}
+
 sub levenshtein-association(@words, Str @unassociated, @dst, @src)
 {
   WORD: for @words.keys -> $w {
-    next if @words[$w].chars;
+    next if @words[$w].chars; # already associated?
 
     my $d := @dst[$w];
-    if $d.word.chars > 3 {
+    if $d.word.chars > %opts<min-levenshtein> {
       my @distance = distance($d.word.normalize, @src».word».normalize);
       for @distance.keys -> $k {
-        if @distance[$k] == 1 {
+        if @distance[$k] == %opts<max-levenshtein> {
           say-debug inyellow("      {$d.word} --> {@src[$k].word}");
           #say-debug inyellow(@src[$k].word);
           @words[$w] = format-syntagm($d, @src[$k], :color('yellow'));
@@ -245,8 +275,10 @@ sub levenshtein-association(@words, Str @unassociated, @dst, @src)
 
 sub synonym-association(@words, Str @unassociated, @dst, @src)
 {
+  return unless %opts<synonyms-file>;
+
   WORD: for @words.keys -> $w {
-    next if @words[$w].chars;
+    next if @words[$w].chars; # already associated?
 
     my $d := @dst[$w];
     for @src.keys -> $is {

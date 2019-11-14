@@ -23,6 +23,15 @@ class Syntagm is Elem
   method gist() {
     say "#$.order, text: [$.text], word: [$.word], pre-tags: $.pre-tags, tags: {@.tags.join}";
   }
+  method share-strongs-with(Syntagm $other) {
+    for @!tags.grep(/^ '<W' <[GH]> /) -> $ours {
+      for $other.tags.grep(/^ '<W' <[GH]> /) -> $theirs {
+        #say "share-strongs-with: $ours <=> $theirs";
+        return True if $ours eq $theirs
+      }
+    }
+    False
+  }
 }
 
 class Verse::Actions
@@ -37,7 +46,7 @@ class Verse::Actions
     make Syntagm.new(
             :text(~$/),
             :word($<word>.made),
-            :tags(@<tags>».made),
+            :tags(@<tag>».made),
             :pre-tags($<wt>.made // "")
     );
     #say $/.made;
@@ -51,7 +60,7 @@ class Verse::Actions
 
   method word($/)       { make ~$/ }
   method wt($/)         { $!order++; make ~$/ }
-  method tags($/)       { make ~$/ }
+  method tag($/)        { make $<strong-tag>.made // $<morpho-tag>.made }
   method morpho-tag($/) { make ~$/ }
   method strong-tag($/) { make ~$/ }
 
@@ -122,15 +131,15 @@ grammar Verse {
   token morpho-tag {
     '<WT' <.morfo> [ \h+ 'l="' <.lemma> '"' ]?  [ \h+ 'lh="' <.homonym> '"' ]? '>'
   }
-  token syntagm    { <wt>? <word> <tags>*         }
-  token tags       { [ <strong-tag>|<morpho-tag> ]+}
+  token syntagm    { <wt>? <word> <tag>*                }
+  token tag        { <strong-tag>|<morpho-tag>          }
   token word       { '-'? [<:Letter>|<:Number>|<[᾿΄]>]+ }
-  token wt         { '<wt>'                        }
-  token strong-tag { '<W' <.strong> <[sx]>? '>'    }
-  token strong     { <[HG]> \d+ [ '.' \d+ ]?       }
-  token morfo      { <[a..z A..Z 0..9 -]>+         }
-  token lemma      { <-[>"]>+                      }
-  token homonym    { <.lemma>                      }
+  token wt         { '<wt>'                             }
+  token strong-tag { '<W' <.strong> <[sx]>? '>'         }
+  token strong     { <[HG]> \d+ [ '.' \d+ ]?            }
+  token morfo      { <[a..z A..Z 0..9 -]>+              }
+  token lemma      { <-[>"]>+                           }
+  token homonym    { <.lemma>                           }
 }
 
 
