@@ -80,11 +80,14 @@ sub add-strongs()
 {
   our $idx = Biblia::TheWord::Index.new( :lang(en_us), :range(get-common-range()) );
 
-  my Int @lines = 1..$idx.max;
-  my @src-lines = %opts<src-module>.IO.lines[|get-src-range()];
-  my @dst-lines = %opts<dst-module>.IO.lines[|get-dst-range()];
+  my Int @lines     = 1..$idx.max;
+  my Int @src-lines = %opts<src-module>.IO.lines[|get-src-range()];
+  my Int @dst-lines = %opts<dst-module>.IO.lines[|get-dst-range()];
 
   $ibiblia-project = Biblia::iBiblia::ProjectWriter.new(:file(%opts<ibiblia>), :range($idx.range)) if %opts<ibiblia>;
+
+  my ($line, $dst-line, $src-line) = @lines.shift, @dst-lines.shift, @src-lines.shift;
+  my ($p1, $p2) = parse-line($line, $dst-line, $src-line);
 
   for @lines Z @dst-lines Z @src-lines -> [$line, $dst-line, $src-line] {
     NEXT { $idx.next; $ibiblia-pairs = ""; }
@@ -95,15 +98,8 @@ sub add-strongs()
     say-debug inbold("  dst: ") ~ ingreen($dst-line.strip-tags);
     say-debug inbold("  src: ") ~ ingreen($src-line.strip-tags);
 
-    my $p1 = start Biblia::TheWord::Verse.parse(
-      $dst-line,
-      :actions(Biblia::TheWord::Verse::Actions.new)
-    ) or die inred(">>> %opts<module> - couldn't parse verse on line $line:\n"), $dst-line;
-    my $p2 = start Biblia::TheWord::Verse.parse(
-      $src-line,
-      :actions(Biblia::TheWord::Verse::Actions.new)
-    ) or die inred(">>> %opts<src-module> - couldn't parse verse on line $line:\n") ~ $src-line;
     my ($parse_sem_strongs, $parse_com_strongs) = await $p1, $p2;
+    ($p1, $p2) = parse-line(@lines.shift, @dst-lines.shift, @src-lines.shift);
 
     #say $parse_com_strongs.made;
     #say $parse_sem_strongs.made;
@@ -122,6 +118,21 @@ sub add-strongs()
       )
     ) if %opts<ibiblia>;
   }
+}
+
+# Returns two promises, one for the parsing result of each verse
+sub parse-verse(Int $line, Str $src-line, Str $dst-line)
+{
+    my $p1 = start Biblia::TheWord::Verse.parse(
+      $dst-line,
+      :actions(Biblia::TheWord::Verse::Actions.new)
+    ) or die inred(">>> %opts<module> - couldn't parse verse on line $line:\n"), $dst-line;
+    my $p2 = start Biblia::TheWord::Verse.parse(
+      $src-line,
+      :actions(Biblia::TheWord::Verse::Actions.new)
+    ) or die inred(">>> %opts<src-module> - couldn't parse verse on line $line:\n") ~ $src-line;
+
+    ($p1, $p2)
 }
 
 sub print-debug(Str $s)
