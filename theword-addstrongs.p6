@@ -142,9 +142,15 @@ sub same-string(Str $a, Str $b) #is cached
 sub update-ibiblia-pairs(Biblia::TheWord::Syntagm:D $dst,
                          Biblia::TheWord::Syntagm $src?)
 {
+  return unless %opts<ibiblia> && $src && $src.tags;
+
+  my $a = $src.words.grep(Biblia::TheWord::Word).map({.order}).join(',');
+  my $b = $dst.words.grep(Biblia::TheWord::Word).map({.order}).join(',');
+
   #say-debug sprintf('<par a="%d" b="%d">', $src.order, $dst.order);
-  $ibiblia-pairs ~= sprintf('<par a="%d" b="%d">', $src.order, $dst.order)
-    if %opts<ibiblia> && $src && $src.tags;
+  #$ibiblia-pairs ~= sprintf('<par a="%d" b="%d">', $src.order, $dst.order)
+  #  if %opts<ibiblia> && $src && $src.tags;
+  $ibiblia-pairs ~= "<par a=\"$a\" b=\"$b\">";
 }
 
 sub format-syntagm(Biblia::TheWord::Syntagm:D $dst,
@@ -154,8 +160,8 @@ sub format-syntagm(Biblia::TheWord::Syntagm:D $dst,
   my Str $elem;
 
   #$elem  = "<wt>" if $src && !%opts<no-tags>;
-  $elem ~= $src.pre-tags if $src && !%opts<not-tags>;
-  $elem ~= colored($dst.word, $src ?? $color !! 'red');
+  $elem ~= $src.pre-tags if $src && !%opts<no-tags>;
+  $elem ~= colored($dst.get-words, $src ?? $color !! 'red');
   $elem ~= $src.tags.join if $src && !%opts<no-tags>;
   $elem ~= '<?>' if $color eq 'yellow' && !%opts<no-tags>;
 
@@ -186,7 +192,7 @@ sub associate-verse(@dst, @src is copy)
     if %opts<debug> && (@src.elems || @unassociated.elems) {
       say "   left after {$phase.name}";
       say "     dst: " ~ inyellow(@unassociated.join(" "));
-      say "     src: " ~ inyellow(@src.grep(Biblia::TheWord::Syntagm).map({.word}).join(" "));
+      say "     src: " ~ inyellow(@src.grep(Biblia::TheWord::Syntagm).map({.get-words}).join(" "));
     }
 
     last unless @src.elems && any(@words».chars) == 0;
@@ -234,14 +240,14 @@ sub strongs-association(@words, Str @unassociated, @dst, @src)
         my $s := @src[$is];
         next unless $s ~~ Biblia::TheWord::Syntagm && $s.tags.elems;
         if $d.share-strongs-with($s) {
-          say-debug inyellow("      {$d.word} --> {$s.word}");
+          say-debug inyellow("      {$d.get-words} --> {$s.get-words}");
           @words[$id] = format-syntagm($d, $s);
           @src.splice($is, 1);
           next WORD;
         }
       }
       @words[$id] = '';
-      @unassociated.push($d.word);
+      @unassociated.push($d.get-words);
     } else {
       @words[$id] = $d.text;
     }

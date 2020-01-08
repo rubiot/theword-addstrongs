@@ -74,7 +74,7 @@ class Project
   has Biblia::TheWord::Index $.idx is rw;
 
   submethod BUILD(:$!file) {
-    $!dbh = DBIish.connect("SQLite", :database($!file));
+    $!dbh = DBIish.connect("SQLite", :database($!file), :AutoCommit(False));
   }
 
   submethod DESTROY() {
@@ -142,6 +142,15 @@ class ProjectWriter is Project
 
   submethod DESTROY() {
     $!insert-sth.finish;
+    self.dbh.commit;
+  }
+
+  method commit() {
+    self.dbh.commit;
+  }
+
+  method rollback() {
+    self.dbh.rollback;
   }
 
   method add-info(Str:D $key, Str:D $value) {

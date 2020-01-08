@@ -38,6 +38,9 @@ class Syntagm is Elem
     }
     False
   }
+  method get-words() {
+    @!words>>.text.join
+  }
 }
 
 class Verse::Actions
