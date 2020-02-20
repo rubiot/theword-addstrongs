@@ -89,6 +89,7 @@ sub add-strongs()
   for @lines Z @dst-lines Z @src-lines -> [$line, $dst-line, $src-line] {
     NEXT { $idx.next; $ibiblia-pairs = ""; }
 
+    last if $idx.bookId > 1; # DEBUG DEBUG
     next if $line < %opts<start-line>;
 
     say-debug inbold("line {$idx.line()}, {$idx.ref()}...");
@@ -108,6 +109,10 @@ sub add-strongs()
     #say $parse_com_strongs.made;
     #say $parse_sem_strongs.made;
 
+#    if $parse_com_strongs.made.grep(Biblia::TheWord::Word).grep({.text ~~ /'<WG'/}).elems {
+#        die "Unparsed strong found on line:$line:\n" ~ $src-line
+#    }
+
     associate-verse(
       $parse_sem_strongs.made,
       $parse_com_strongs.made.grep(Biblia::TheWord::Syntagm)
@@ -121,6 +126,9 @@ sub add-strongs()
         :pairs($ibiblia-pairs)
       )
     ) if %opts<ibiblia>;
+
+    #$parse_com_strongs.made>>.say;
+    #last if $idx.ref eq 'Gen 1:5';
   }
 }
 

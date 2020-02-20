@@ -10,7 +10,7 @@ class Elem
   has Int $.order is required is rw;
 
   method Str() {
-    say "#$.order, text: [$.text]";
+    "(#$.order, text: [$.text])";
   }
 }
 
@@ -26,8 +26,8 @@ class Syntagm is Elem
   has Str @.tags;
 
   method Str() {
-    say "#$.order, text: [$.text], words: [{@.words».text.join}], pre-tags: [$.pre-tags], tags: [{@.tags.join}]";
-    #say "#$.order, text: [$.text], words: [{@.words>>.Str.join}], pre-tags: [$.pre-tags], tags: [{@.tags.join}]";
+    "#$.order, text: [$.text], words: [{@.words».text.join}], pre-tags: [$.pre-tags], tags: [{@.tags.join}]";
+    #say "#$.order, text: [$.text], words: [{@.words».Str.join}], pre-tags: [$.pre-tags], tags: [{@.tags.join}]";
   }
   method share-strongs-with(Syntagm $other) {
     for @!tags.grep(/^ '<W' <[GH]> /) -> $ours {
@@ -121,11 +121,11 @@ grammar Verse {
   }
 
   token punctuation  {
-    <+[.,:;!? \(\) \[\] \{\} ] +[\|\"\'´‘’·—\-\─「」«»=*]>+
+    <:Punctuation>+
   }
 
   token blank  {
-    \h+
+    <:White_Space>+
   }
 
   token other-tag
@@ -150,24 +150,24 @@ grammar Verse {
   }
   token syntagm    { <wt> <words> <tag>* | <word> <tag>* }
   token tag        { <strong-tag>|<morpho-tag>           }
-  token word       { '-'? [<:Letter>|<:Number>|<[᾿΄]>]+  }
+  token word       { '-'? [<:Letter>|<:Number>|<[᾿΄׃־׀]>]+  }
   token words      { <word>+ % <blank>                   }
   token wt         { '<wt>'                              }
   token strong-tag { '<W' <.strong> <[sx]>? '>'          }
   token strong     { <[HG]> \d+ [ '.' \d+ ]?             }
-  token morfo      { <[a..z A..Z 0..9 -]>+               }
+  token morfo      { <-[\h]>+                            }
   token lemma      { <-[>"]>+                            }
   token homonym    { <.lemma>                            }
 }
 
-##           0   1    23      45           6
-#my $line = '<wt>Livro de<WG1> geração<WG2>.';
+#           0   1    23      45           6
+#my $line = '<v=1.1.1><wt>בְּ<WH9003><WTprep l="בְּ"><sup>In</sup> <wt>רֵאשִׁ֖ית<WH7225><WTsubs.f.sg.a l="רֵאשִׁית"><sup>the beginning</sup> <wt>בָּרָ֣א<WH1254><WTverb.qal.perf.p3.m.sg l="ברא"><sup>created</sup> <wt>אֱלֹהִ֑ים<WH430><WTsubs.m.pl.a l="אֱלֹהִים"><sup>God</sup> <wt>אֵ֥ת<WH853><WTprep l="אֵת"><sup>•</sup> <wt>הַ<WH9009><WTart l="הַ"><sup>the</sup> <wt>שָּׁמַ֖יִם<WH8064><WTsubs.m.pl.a l="שָׁמַיִם"><sup>heavens</sup> <wt>וְ<WH9000><WTconj l="וְ"><sup>•</sup> <wt>אֵ֥ת<WH853><WTprep l="אֵת"><sup>and</sup> <wt>הָ<WH9009><WTart l="הַ"><sup>the</sup> <wt>אָֽרֶץ׃<WH776><WTsubs.u.sg.a l="אֶרֶץ"><sup>earth.</sup>';
 #my $parse_sem_strongs = Biblia::TheWord::Verse.parse(
 #      $line,
 #      :actions(Biblia::TheWord::Verse::Actions.new)
 #) or die "couldn't parse verse on line $line:\n";
 ##say $parse_sem_strongs;
-#say $parse_sem_strongs.made;
+#say $parse_sem_strongs.made.map({.Str});
 
 #my @x = [
 #  Biblia::TheWord::Syntagm.new(
