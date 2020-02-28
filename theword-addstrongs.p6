@@ -89,7 +89,7 @@ sub add-strongs()
   for @lines Z @dst-lines Z @src-lines -> [$line, $dst-line, $src-line] {
     NEXT { $idx.next; $ibiblia-pairs = ""; }
 
-    last if $idx.bookId > 1; # DEBUG DEBUG
+    #last if $idx.bookId > 1; # DEBUG DEBUG
     next if $line < %opts<start-line>;
 
     say-debug inbold("line {$idx.line()}, {$idx.ref()}...");
