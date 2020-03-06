@@ -1,5 +1,5 @@
 # theword-addstrongs
-Command-line tool to copy strongs/morphology tags from one [theWord](http://www.theword.net) Bible module to another based on similar words.
+This is [Raku](https://raku.org/) command-line tool to copy strongs/morphology tags from one [theWord](http://www.theword.net) Bible module to another based on similar words.
 
 Usage:
 
