@@ -22,5 +22,5 @@ The following [Raku](https://raku.org/) modules are necessary to run the script:
 
 ## Known issues/limitations
 * Bible modules must be in UTF-8 format;
-* There can be no puctuation between a word and its Strong's/morphology tags;
+* There can be no puctuation between a word and its Strong's/morphology tags. Move them to after the tags;
 * Verse rules are not taken into account. If this is a problem, then apply them manually before running the script;
