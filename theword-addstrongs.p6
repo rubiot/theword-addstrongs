@@ -224,14 +224,14 @@ sub exact-association(@words, Str @unassociated, @dst, @src)
       for @src.keys -> $is {
         my $s := @src[$is];
         next unless $s ~~ Biblia::TheWord::Syntagm;
-        if same-string($s.word, $d.word) {
+        if same-string($s.get-words, $d.get-words) {
           @words[$id] = format-syntagm($d, $s);
           @src.splice($is, 1);
           next WORD;
         }
       }
       @words[$id] = '';
-      @unassociated.push($d.word);
+      @unassociated.push($d.get-words);
     } else {
       @words[$id] = $d.text
     }
