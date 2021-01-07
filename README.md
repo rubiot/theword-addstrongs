@@ -18,7 +18,8 @@ Usage:
 The following [Raku](https://raku.org/) modules are necessary to run the script:
 * Terminal::ANSIColor;
 * Text::Levenshtein;
-* DBIish.
+* DBIish;
+* Data::Dump.
 
 ## Known issues/limitations
 * Bible modules must be in UTF-8 format;
