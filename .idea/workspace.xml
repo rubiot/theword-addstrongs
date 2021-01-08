@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a0a02d96-d99d-4f82-b540-6fa911bce3e6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Biblia/TheWord/Verse.pm6" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Biblia/TheWord/Verse.pm6" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Biblia/iBiblia.pm6" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Biblia/iBiblia.pm6" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/theword-addstrongs.p6" beforeDir="false" afterPath="$PROJECT_DIR$/theword-addstrongs.p6" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectConfigurationFiles">
+    <option name="files">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/theword-addstrongs.iml" />
+        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+        <option value="$PROJECT_DIR$/.idea/modules.xml" />
+        <option value="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1XhwpXI7NXhKElRDVsCIxZQ3hfw" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/theword-addstrongs.p6" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="http.proxy" />
+  </component>
+  <component name="RunManager" selected="Raku.BHSA-ACF">
+    <configuration name="BHSA-ACF" type="PERL6_RUN_CONFIGURATION" factoryName="Raku">
+      <SCRIPT_PATH>$PROJECT_DIR$/theword-addstrongs.p6</SCRIPT_PATH>
+      <SCRIPT_ARGS>--borrow-from=$PROJECT_DIR$/../open-hebrew-bible-importer/BHSA.ot --file=ACFAT.ot --strongs-association --debug --ibiblia=bhsa-acf.bib</SCRIPT_ARGS>
+      <WORKING_DIRECTORY>$PROJECT_DIR$</WORKING_DIRECTORY>
+      <ENV_VARS />
+      <PASS_ENVIRONMENT>false</PASS_ENVIRONMENT>
+      <PERL6_PARAMS />
+      <DEBUG_PORT>9999</DEBUG_PORT>
+      <START_SUSPENDED>false</START_SUSPENDED>
+      <method v="2" />
+    </configuration>
+    <configuration name="add-strongs-acf" type="PERL6_RUN_CONFIGURATION" factoryName="Perl 6">
+      <SCRIPT_PATH>$PROJECT_DIR$/theword-addstrongs.p6</SCRIPT_PATH>
+      <SCRIPT_ARGS>--file=/home/rubio/Downloads/docs/NTACF+Strong.nt --borrow-from=kjv.nt --debug --strongs-association --ibiblia=acf-kjv-nt.bib</SCRIPT_ARGS>
+      <WORKING_DIRECTORY>$PROJECT_DIR$</WORKING_DIRECTORY>
+      <ENV_VARS />
+      <PASS_ENVIRONMENT>false</PASS_ENVIRONMENT>
+      <PERL6_PARAMS />
+      <DEBUG_PORT>9999</DEBUG_PORT>
+      <START_SUSPENDED>true</START_SUSPENDED>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Raku.BHSA-ACF" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a0a02d96-d99d-4f82-b540-6fa911bce3e6" name="Default Changelist" comment="" />
+      <created>1573577384545</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1573577384545</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="768" y="229" key="#Raku" timestamp="1610055339211">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="768" y="229" key="#Raku/0.0.1920.1040/-354.-1440.2560.1400@0.0.1920.1040" timestamp="1610055339211" />
+  </component>
+</project>

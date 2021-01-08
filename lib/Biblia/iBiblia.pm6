@@ -60,6 +60,8 @@ constant @ddl-statements =
   "CREATE INDEX 'ldes_locucao_idx' ON locucoes_destino (ldes_locucao)",
 ;
 
+enum AssociationStatus is export <UNASSOCIATED ASSOCIATING NEEDS_REVIEW ASSOCIATED>;
+
 class Pair
 {
   has Str $.src-text;
@@ -74,7 +76,7 @@ class Project
   has Biblia::TheWord::Index $.idx is rw;
 
   submethod BUILD(:$!file) {
-    $!dbh = DBIish.connect("SQLite", :database($!file));
+    $!dbh = DBIish.connect("SQLite", :database($!file), :AutoCommit(False));
   }
 
   submethod DESTROY() {
@@ -142,13 +144,22 @@ class ProjectWriter is Project
 
   submethod DESTROY() {
     $!insert-sth.finish;
+    self.dbh.commit;
+  }
+
+  method commit() {
+    self.dbh.commit;
+  }
+
+  method rollback() {
+    self.dbh.rollback;
   }
 
   method add-info(Str:D $key, Str:D $value) {
     $!insert-info($key, $value);
   }
 
-  method insert(Int:D $line, Pair:D $pair) {
+  method insert(Int:D $line, Pair:D $pair, AssociationStatus:D $status) {
     self.idx.goto($line);
     $!insert-sth.execute(
       sprintf("%d,%d,%d", self.idx.bookId, self.idx.chapter, self.idx.verse),
@@ -158,7 +169,7 @@ class ProjectWriter is Project
       "", # reference 1
       "", # reference 2
       $pair.pairs,
-      0,  # status
+      $status.value,
       ""  # comments
     );
   }
