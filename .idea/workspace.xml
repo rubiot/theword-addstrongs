@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0a02d96-d99d-4f82-b540-6fa911bce3e6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Biblia/TheWord/Verse.pm6" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Biblia/TheWord/Verse.pm6" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Biblia/iBiblia.pm6" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Biblia/iBiblia.pm6" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theword-addstrongs.p6" beforeDir="false" afterPath="$PROJECT_DIR$/theword-addstrongs.p6" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -28,10 +28,11 @@
   <component name="ProjectId" id="1XhwpXI7NXhKElRDVsCIxZQ3hfw" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/theword-addstrongs.p6" />
     <property name="project.structure.last.edited" value="Project" />
@@ -80,45 +81,9 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="419" y="93" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584382479454">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state x="768" y="229" key="#Raku" timestamp="1610055339211">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="419" y="93" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1584382479454" />
-    <state x="2663" y="286" width="426" height="479" key="FileChooserDialogImpl" timestamp="1583524174353">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state x="743" y="286" width="426" height="479" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1581511884843" />
-    <state x="2663" y="286" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1583524174353" />
-    <state width="1897" height="287" key="GridCell.Tab.0.bottom" timestamp="1583862057667">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state width="1897" height="214" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1582749382479" />
-    <state width="1897" height="287" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1583862057667" />
-    <state width="1897" height="287" key="GridCell.Tab.0.center" timestamp="1583862057667">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state width="1897" height="214" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1582749382479" />
-    <state width="1897" height="287" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1583862057667" />
-    <state width="1897" height="287" key="GridCell.Tab.0.left" timestamp="1583862057667">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state width="1897" height="214" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1582749382479" />
-    <state width="1897" height="287" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1583862057667" />
-    <state width="1897" height="287" key="GridCell.Tab.0.right" timestamp="1583862057667">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state width="1897" height="214" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1582749382479" />
-    <state width="1897" height="287" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1583862057667" />
-    <state x="2477" y="239" width="797" height="572" key="SettingsEditor" timestamp="1583524176926">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state x="557" y="239" width="797" height="572" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1581511858725" />
-    <state x="2477" y="239" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1583524176926" />
-    <state x="653" y="347" key="com.intellij.ide.util.TipDialog" timestamp="1584991673920">
-      <screen x="0" y="0" width="1920" height="1055" />
-    </state>
-    <state x="653" y="347" key="com.intellij.ide.util.TipDialog/0.0.1920.1055@0.0.1920.1055" timestamp="1584991673920" />
-    <state x="653" y="355" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1581538034293" />
-    <state x="2573" y="355" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1584381070638" />
+    <state x="768" y="229" key="#Raku/0.0.1920.1040/-354.-1440.2560.1400@0.0.1920.1040" timestamp="1610055339211" />
   </component>
 </project>

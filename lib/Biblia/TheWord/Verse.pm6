@@ -159,9 +159,10 @@ grammar Verse {
   token word       { '-'? <-[-\ \t|<".,;:!?()··“”]>+ | '-' }
   token words      { <word>+ % <blank>                   }
   token wt         { '<wt>'                              }
-  token strong-tag { '<W' <.strong> <[sx]>? '>'          }
-  token strong     { <[HG]> \d+ [ '.' \d+ ]?             }
-  token morfo      { <-[\h]>+                            }
+  token strong-tag { '<W' .+? '>'                        }
+  #token strong-tag { '<W' <.strong> <[sx]>? '>'          }
+  #token strong     { <[HG]> \d+ [ '.' \d+ ]?             }
+  token morfo      { <-[\h>]>+                           }
   token lemma      { <-[>"]>+                            }
   token homonym    { <.lemma>                            }
 }

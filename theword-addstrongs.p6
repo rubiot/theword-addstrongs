@@ -43,6 +43,7 @@ our &inwhite  := &colored.assuming(*, 'white');
 our %opts;
 our $ibiblia-project;
 our $ibiblia-pairs = '';
+our $ibiblia-status;
 
 sub MAIN(
   BibleModule:D :$file!,       # Path to the module you want to add Strongs to
@@ -87,7 +88,7 @@ sub add-strongs()
   $ibiblia-project = Biblia::iBiblia::ProjectWriter.new(:file(%opts<ibiblia>), :range($idx.range)) if %opts<ibiblia>;
 
   for @lines Z @dst-lines Z @src-lines -> [$line, $dst-line, $src-line] {
-    NEXT { $idx.next; $ibiblia-pairs = ""; }
+    NEXT { $idx.next; $ibiblia-pairs = "" }
 
     #last if $idx.bookId > 1; # DEBUG DEBUG
     next if $line < %opts<start-line>;
@@ -106,8 +107,12 @@ sub add-strongs()
     ) or die inred(">>> %opts<src-module> - couldn't parse verse on line $line:\n") ~ $src-line;
     my ($parse_sem_strongs, $parse_com_strongs) = await $p1, $p2;
 
-    #say $parse_com_strongs.made;
-    #say $parse_sem_strongs.made;
+    #say $parse_com_strongs.made.map({.Str ~ "\n"});
+    #say $parse_sem_strongs.made.map({.Str ~ "\n"});
+    #say $parse_com_strongs;
+    #say $parse_sem_strongs;
+    #say Dump($parse_com_strongs.made, :skip-methods(True));
+    #say Dump($parse_sem_strongs.made, :skip-methods(True));
 
 #    if $parse_com_strongs.made.grep(Biblia::TheWord::Word).grep({.text ~~ /'<WG'/}).elems {
 #        die "Unparsed strong found on line:$line:\n" ~ $src-line
@@ -124,8 +129,10 @@ sub add-strongs()
         :src-text($src-line),
         :dst-text($dst-line),
         :pairs($ibiblia-pairs)
-      )
+      ),
+      $ibiblia-status
     ) if %opts<ibiblia>;
+    say $idx.ref if %opts<ibiblia>;
 
     #$parse_com_strongs.made>>.say;
     #last if $idx.ref eq 'Gen 1:5';
@@ -180,15 +187,24 @@ sub format-syntagm(Biblia::TheWord::Syntagm:D $dst,
 
 sub print-verse(Str $line)
 {
+  return if %opts<ibiblia>;
   say %opts<debug> ?? $line !! colorstrip($line);
   say-debug "";
 }
 
 sub associate-verse(@dst, @src is copy)
 {
+  unless @dst.elems {
+    $ibiblia-status = AssociationStatus::UNASSOCIATED;
+    print-verse("");
+    return;
+  }
+
   my @phases = %opts<strongs-association> ?? (&strongs-association)
                                           !! (&exact-association, &levenshtein-association, &synonym-association);
 
+  my $srcElems = @src.elems;
+  my $dstElems = @dst.elems;
   my Str @words[@dst.elems];
   my Str @unassociated;
 
@@ -210,6 +226,23 @@ sub associate-verse(@dst, @src is copy)
   for @words.keys -> $w {
     @words[$w] = format-syntagm(@dst[$w])
       if @words[$w].chars == 0;
+  }
+
+  if %opts<ibiblia> {
+    if @unassociated.elems || $srcElems > $dstElems {
+      $ibiblia-status = AssociationStatus::ASSOCIATING;
+    } elsif @words.grep({/'<?>'/}) {
+      $ibiblia-status = AssociationStatus::NEEDS_REVIEW;
+    } elsif @dst.elems == $dstElems && @src.elems == $srcElems {
+      $ibiblia-status = AssociationStatus::UNASSOCIATED;
+    } else {
+      $ibiblia-status = AssociationStatus::ASSOCIATED;
+    }
+    #say "unassociated: @unassociated.elems()";
+    #say "before src: $srcElems dst: $dstElems";
+    #say "after  src: @src.elems() dst: @dst.elems()";
+    #say "iBiblia status: $ibiblia-status";
+    #say "";
   }
 
   print-verse @words.join
@@ -268,11 +301,11 @@ sub levenshtein-association(@words, Str @unassociated, @dst, @src)
     next if @words[$w].chars; # already associated?
 
     my $d := @dst[$w];
-    if $d.word.chars > %opts<min-levenshtein> {
-      my @distance = distance($d.word.normalize, @src».word».normalize);
+    if $d.get-words.chars > %opts<min-levenshtein> {
+      my @distance = distance($d.get-words.normalize, @src».get-words».normalize);
       for @distance.keys -> $k {
         if @distance[$k] == %opts<max-levenshtein> {
-          say-debug inyellow("      {$d.word} --> {@src[$k].word}");
+          say-debug inyellow("      {$d.get-words} --> {@src[$k].get-words}");
           #say-debug inyellow(@src[$k].word);
           @words[$w] = format-syntagm($d, @src[$k], :color('yellow'));
           @src.splice($k, 1);
@@ -283,29 +316,33 @@ sub levenshtein-association(@words, Str @unassociated, @dst, @src)
       last unless @src.elems;
       #say-debug inyellow("???");
     }
-    @unassociated.push($d.word);
+    @unassociated.push($d.get-words);
   }
 }
 
 sub synonym-association(@words, Str @unassociated, @dst, @src)
 {
-  return unless %opts<synonyms-file>;
-
   WORD: for @words.keys -> $w {
     next if @words[$w].chars; # already associated?
 
     my $d := @dst[$w];
+
+    unless %opts<synonyms-file> {
+      @unassociated.push($d.get-words);
+      next;
+    }
+
     for @src.keys -> $is {
       my $s := @src[$is];
       next unless $s ~~ Biblia::TheWord::Syntagm;
-      if $s.word.synonym-of($d.word) {
-        say-debug inyellow("      {$d.word} --> {$s.word}");
+      if $s.word.synonym-of($d.get-words) {
+        say-debug inyellow("      {$d.get-words} --> {$s.get-words}");
         @words[$w] = format-syntagm($d, $s);
         @src.splice($is, 1);
         next WORD;
       }
     }
-    @unassociated.push($d.word);
+    @unassociated.push($d.get-words);
   }
 }
 

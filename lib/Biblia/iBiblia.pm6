@@ -60,6 +60,8 @@ constant @ddl-statements =
   "CREATE INDEX 'ldes_locucao_idx' ON locucoes_destino (ldes_locucao)",
 ;
 
+enum AssociationStatus is export <UNASSOCIATED ASSOCIATING NEEDS_REVIEW ASSOCIATED>;
+
 class Pair
 {
   has Str $.src-text;
@@ -157,7 +159,7 @@ class ProjectWriter is Project
     $!insert-info($key, $value);
   }
 
-  method insert(Int:D $line, Pair:D $pair) {
+  method insert(Int:D $line, Pair:D $pair, AssociationStatus:D $status) {
     self.idx.goto($line);
     $!insert-sth.execute(
       sprintf("%d,%d,%d", self.idx.bookId, self.idx.chapter, self.idx.verse),
@@ -167,7 +169,7 @@ class ProjectWriter is Project
       "", # reference 1
       "", # reference 2
       $pair.pairs,
-      0,  # status
+      $status.value,
       ""  # comments
     );
   }
