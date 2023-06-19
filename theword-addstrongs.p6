@@ -123,15 +123,8 @@ sub add-strongs()
       $parse_com_strongs.made.grep(Biblia::TheWord::Syntagm)
     );
 
-    $ibiblia-project.insert(
-      $line,
-      Biblia::iBiblia::Pair.new(
-        :src-text($src-line),
-        :dst-text($dst-line),
-        :pairs($ibiblia-pairs)
-      ),
-      $ibiblia-status
-    ) if %opts<ibiblia>;
+    update-ibiblia-project($line, $src-line, $dst-line) if %opts<ibiblia>;
+
     say $idx.ref if %opts<ibiblia>;
 
     #$parse_com_strongs.made>>.say;
@@ -152,6 +145,22 @@ sub say-debug(Str $s)
 sub same-string(Str $a, Str $b) #is cached
 {
   $a.normalize eq $b.normalize
+}
+
+sub update-ibiblia-project(Int $line, Str $src-line, Str $dst-line) {
+    if %opts<debug> {
+        print $ibiblia-pairs;
+        return;
+    }
+    $ibiblia-project.insert(
+            $line,
+            Biblia::iBiblia::Pair.new(
+                    :src-text($src-line),
+                    :dst-text($dst-line),
+                    :pairs($ibiblia-pairs)
+                    ),
+            $ibiblia-status
+            );
 }
 
 sub update-ibiblia-pairs(Biblia::TheWord::Syntagm:D $dst,

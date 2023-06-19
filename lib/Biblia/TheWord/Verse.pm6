@@ -62,7 +62,7 @@ class Verse::Actions
             :tags(@<tag>».made),
             :pre-tags($<wt>.made // "")
     );
-    #say $/.made;
+    # say $/.made;
   }
   method punctuation($/){ make Elem.new( :text(~$/), :order($!order++) ) }
   method blank($/)      { make Elem.new( :text(~$/), :order($!order++) ) }
@@ -125,7 +125,7 @@ grammar Verse {
 
   token punctuation  {
     #<:Punctuation>+
-    <[".,;:!?()··“”]>+
+    <[".,;:!?()·“”]>+
   }
 
   token blank  {
@@ -154,14 +154,15 @@ grammar Verse {
     '<WT' <.morfo> [ \h+ 'l="' <.lemma> '"' ]?  [ \h+ 'lh="' <.homonym> '"' ]? '>'
   }
   token syntagm    { <wt> <words> <tag>* | <word> <tag>* }
-  token tag        { <strong-tag>|<morpho-tag>           }
+  token tag        { <strong-tag>|<morpho-tag> }
   #token word       { '-'? [<:Letter>|<:Number>|<[᾿΄׃־׀]>]+}
-  token word       { '-'? <-[-\ \t|<".,;:!?()··“”]>+ | '-' }
+  token word       { ['-'? <-[-\ \t|<".,;:!?()·“”]>+ | '-'] | <added-word-tag> }
   token words      { <word>+ % <blank>                   }
   token wt         { '<wt>'                              }
   token strong-tag { '<W' .+? '>'                        }
   #token strong-tag { '<W' <.strong> <[sx]>? '>'          }
   #token strong     { <[HG]> \d+ [ '.' \d+ ]?             }
+  token added-word-tag { '<F' <[Ii]> '>' }
   token morfo      { <-[\h>]>+                           }
   token lemma      { <-[>"]>+                            }
   token homonym    { <.lemma>                            }
@@ -169,7 +170,7 @@ grammar Verse {
 
 if False {
   #           0   1    23      45           6
-  my $line = '<v=1.14.20><wt>וּ<WH9000><WTconj l="וְ"><sup>and</sup> <wt>בָרוּךְ֙<WH1288><WTverb.qal.ptcp.u.m.sg.a l="ברך"><sup>blessed be</sup> <wt>אֵ֣ל<WH410><WTsubs.m.sg.a l="אֵל"><sup>God</sup> <wt>עֶלְיֹ֔ון<WH5945><WTadjv.m.sg.a l="עֶלְיֹון"><sup>Most High,</sup> <wt>אֲשֶׁר־<WH834><WTconj l="אֲשֶׁר"><sup>who</sup> <wt>מִגֵּ֥ן<WH4042><WTverb.piel.perf.p3.m.sg l="מגן"><sup>has delivered</sup> <wt>צָרֶ֖יךָ<WH6862><WTsubs.m.pl.a.prs.p2.m.sg l="צַר"><sup>your enemies</sup> <wt>בְּ<WH9003><WTprep l="בְּ"><sup>•</sup> <wt>יָדֶ֑ךָ<WH3027><WTsubs.u.sg.a.prs.p2.m.sg l="יָד"><sup>into your hand.”</sup> <wt>וַ<WH9000><WTconj l="וְ"><sup>•</sup> <wt>יִּתֶּן־<WH5414><WTverb.qal.wayq.p3.m.sg l="נתן"><sup>Then Abram gave</sup> <wt>לֹ֥ו<WH9005><WTprep.prs.p3.m.sg l="לְ"><sup>•</sup> <wt>מַעֲשֵׂ֖ר<WH4643><WTsubs.m.sg.a l="מַעֲשֵׂר"><sup><FI>Melchizedek<Fi> a tenth</sup> <wt>מִ<WH4480><WTprep l="מִן"><sup>•</sup> <wt>כֹּֽל׃<WH3605><WTsubs.m.sg.a l="כֹּל"><sup>of everything.</sup>';
+  my $line = '<wt>Novamente<WG3825><WTADV l="πάλιν"> <wt>o<WG846><WTP-ASM l="αὐτός"> <wt>transportou<WG3880><WTV-PAI-3S l="παραλαμβάνω"> <wt>o<WG3588><WTT-NSM l="ὁ"> <wt>diabo<WG1228><WTA-NSM l="διάβολος"> <wt>a<WG1519><WTPREP l="εἰς"> <wt><FI>um<Fi> monte<WG3735><WTN-ASN l="ὄρος"> <wt>muito<WG3029><WTADV l="λίαν"> <wt>alto<WG5308><WTA-ASN l="ὑψηλός">; <wt>e<WG2532><WTCONJ l="καί"> <wt>mostrou<WG1166><WTV-PAI-3S l="δεικνύω"><wt>-lhe<WG846><WTP-DSM l="αὐτός"> <wt>todos<WG3956><WTA-APF l="πᾶς"> <wt>os<WG3588><WTT-APF l="ὁ"> <wt>reinos<WG932><WTN-APF l="βασιλεία"> <wt>do<WG3588><WTT-GSM l="ὁ"> <wt>mundo<WG2889><WTN-GSM l="κόσμος">, <wt>e<WG2532><WTCONJ l="καί"> <wt>a<WG3588><WTT-ASF l="ὁ"> <wt>glória<WG1391><WTN-ASF l="δόξα"> <wt>deles<WG846><WTP-GPF l="αὐτός">.';
   my $parse_sem_strongs = Biblia::TheWord::Verse.parse(
           $line,
           :actions(Biblia::TheWord::Verse::Actions.new)

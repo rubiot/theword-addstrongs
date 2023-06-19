@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0a02d96-d99d-4f82-b540-6fa911bce3e6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Biblia/TheWord/Verse.pm6" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Biblia/TheWord/Verse.pm6" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Biblia/iBiblia.pm6" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Biblia/iBiblia.pm6" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theword-addstrongs.p6" beforeDir="false" afterPath="$PROJECT_DIR$/theword-addstrongs.p6" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -14,6 +14,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectConfigurationFiles">
     <option name="files">
@@ -30,16 +33,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/theword-addstrongs.p6" />
-    <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="http.proxy" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/rubio/github/theword-addstrongs&quot;,
+    &quot;raku.project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;raku.project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;raku.project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;
+  }
+}</component>
   <component name="RunManager" selected="Raku.BHSA-ACF">
     <configuration name="BHSA-ACF" type="PERL6_RUN_CONFIGURATION" factoryName="Raku">
       <SCRIPT_PATH>$PROJECT_DIR$/theword-addstrongs.p6</SCRIPT_PATH>
@@ -50,6 +54,7 @@
       <PERL6_PARAMS />
       <DEBUG_PORT>9999</DEBUG_PORT>
       <START_SUSPENDED>false</START_SUSPENDED>
+      <LOG_TIMELINE_EVENTS>await;file;process;socket;start</LOG_TIMELINE_EVENTS>
       <method v="2" />
     </configuration>
     <configuration name="add-strongs-acf" type="PERL6_RUN_CONFIGURATION" factoryName="Perl 6">
@@ -67,6 +72,7 @@
       <item itemvalue="Raku.BHSA-ACF" />
     </list>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -80,10 +86,7 @@
     </task>
     <servers />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="768" y="229" key="#Raku" timestamp="1610055339211">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="768" y="229" key="#Raku/0.0.1920.1040/-354.-1440.2560.1400@0.0.1920.1040" timestamp="1610055339211" />
+  <component name="edument.perl6idea.pm.RakuPackageManagerManager">
+    <pmList />
   </component>
 </project>
