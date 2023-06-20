@@ -54,8 +54,8 @@ constant @ddl-statements =
       valor text
   )",
   "CREATE UNIQUE INDEX trad_uk on traducoes(trad_lori_id, trad_ldes_id)",
-  "CREATE UNIQUE INDEX slor_uk on sintagmas_locucoes_origem(slor_lori_id, slor_sori_id)",
-  "CREATE UNIQUE INDEX slde_uk on sintagmas_locucoes_destino(slde_ldes_id, slde_sdes_id)",
+  "CREATE UNIQUE INDEX slor_uk on sintagmas_locucoes_origem(slor_lori_id, slor_sori_id, slor_ordem)",
+  "CREATE UNIQUE INDEX slde_uk on sintagmas_locucoes_destino(slde_ldes_id, slde_sdes_id, slde_ordem)",
   "CREATE INDEX 'lori_locucao_idx' ON locucoes_origem (lori_locucao)",
   "CREATE INDEX 'ldes_locucao_idx' ON locucoes_destino (ldes_locucao)",
 ;
